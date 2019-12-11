@@ -11,7 +11,6 @@ defaultContentLanguageInSubdir= true
   # Prefix URL to edit current page. Will display an "Edit this page" button on top right hand corner of every page. 
   # Useful to give opportunity to people to create merge request for your doc.
   # See the config.toml file from this documentation site to have an example.
-  editURL = "https://github.com/thegrownupgeek/aws_workshop_theme"
   editURL = "https://github.com/ajlanghorn/aws-ako20-cicd-security"
   # Author of the site, will be used in meta information
   author = "Andrew Langhorn, Chris King"
