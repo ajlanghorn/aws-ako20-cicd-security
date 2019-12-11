@@ -1,8 +1,8 @@
-baseURL = "/"
-languageCode = "en-US"
+baseURL = "https://cicdsecurity.ajl.sa-demos.net"
+languageCode = "en-GB"
 defaultContentLanguage = "en"
 
-title = "AWS WorkShop"
+title = "Build Security In - Workshop Guide"
 theme = "aws_workshop_theme"
 metaDataFormat = "yaml"
 defaultContentLanguageInSubdir= true
@@ -12,10 +12,11 @@ defaultContentLanguageInSubdir= true
   # Useful to give opportunity to people to create merge request for your doc.
   # See the config.toml file from this documentation site to have an example.
   editURL = "https://github.com/thegrownupgeek/aws_workshop_theme"
+  editURL = "https://github.com/ajlanghorn/aws-ako20-cicd-security"
   # Author of the site, will be used in meta information
-  author = "Wes Neary"
+  author = "Andrew Langhorn, Chris King"
   # Description of the site, will be used in meta information
-  description = "Documentation for Hugo Learn Theme"
+  description = "Workshop guide for Build Security In session"
   # Shows a checkmark for visited pages on the menu
   showVisitedLinks = false
   # Disable search function. It will hide search bar
@@ -43,7 +44,7 @@ home = [ "HTML", "RSS", "JSON"]
 
 [Languages]
 [Languages.en]
-title = "Documentation for Hugo Learn Theme"
+title = "Build Security In - Workshop Guide"
 weight = 1
 languageName = "English"
 
