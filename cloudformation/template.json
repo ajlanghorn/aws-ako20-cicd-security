@@ -1,0 +1,85 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Build Security In",
+
+  "Resources": {
+    "VPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16"
+      }
+    },
+    "Subnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": { "Ref":"VPC" },
+        "CidrBlock": "10.0.0.0/24"
+      }
+    },
+    "InternetGateway": {
+     "Type": "AWS::EC2::InternetGateway"
+    },
+    "InternetGatewayAttachment": {
+     "Type": "AWS::EC2::VPCGatewayAttachment",
+     "Properties": {
+       "VpcId": {"Ref":"VPC"},
+       "InternetGatewayId": {"Ref":"InternetGateway"}
+     }
+   },
+   "RouteTable": {
+     "Type": "AWS::EC2::RouteTable",
+     "Properties": {
+       "VpcId": {"Ref":"VPC"}
+     }
+   },
+   "Route": {
+     "Type": "AWS::EC2::Route",
+     "DependsOn": "InternetGatewayAttachment",
+     "Properties": {
+       "RouteTableId": {"Ref":"RouteTable"},
+       "DestinationCidrBlock": "0.0.0.0/0",
+       "GatewayId": {"Ref":"InternetGateway"}
+    }
+  },
+  "SubnetRouteTableAssociation": {
+    "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    "Properties": {
+      "RouteTableId": {"Ref":"RouteTable"},
+      "SubnetId": {"Ref":"Subnet"}
+    }
+  },
+  "IpAddress": {
+    "Type": "AWS::EC2::EIP",
+    "DependsOn": "AttachGateway",
+    "Properties": {
+      "Domain": "vpc",
+      "InstanceId": { "Ref": "Jenkins" }
+    }
+  },
+  "JenkinsSecurityGroup" : {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+     "VpcId": {"Ref":"VPC"},
+     "GroupDescription":"Enable access to Jenkins",
+     "SecurityGroupIngress": [
+       {"IpProtocol": "tcp", "FromPort": "443", "ToPort": "443", "CidrIp": "0.0.0.0/0"}
+     ]
+   }
+  },
+  "Jenkins" : {
+    "Type": "AWS::EC2::Instance",
+    "DependsOn": "InternetGatewayAttachment",
+    "Properties": {
+      "ImageId": "ami-03ba821c0b75e252a",
+      "InstanceType": "m5.large",
+      "NetworkInterfaces": {
+        "GroupSet": [{"Ref":"JenkinsSecurityGroup"}],
+        "AssociatePublicIpAddress": "true",
+        "DeviceIndex": "0",
+        "DeleteOnTermination": "true",
+        "SubnetId": {"Ref": "Subnet"}
+      }
+    }
+  }
+ }
+}
