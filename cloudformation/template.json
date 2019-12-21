@@ -50,7 +50,7 @@
   },
   "IpAddress": {
     "Type": "AWS::EC2::EIP",
-    "DependsOn": "AttachGateway",
+    "DependsOn": "InternetGatewayAttachment",
     "Properties": {
       "Domain": "vpc",
       "InstanceId": { "Ref": "Jenkins" }
@@ -62,7 +62,8 @@
      "VpcId": {"Ref":"VPC"},
      "GroupDescription":"Enable access to Jenkins",
      "SecurityGroupIngress": [
-       {"IpProtocol": "tcp", "FromPort": "443", "ToPort": "443", "CidrIp": "0.0.0.0/0"}
+       {"IpProtocol": "tcp", "FromPort": "8080", "ToPort": "8080", "CidrIp": "0.0.0.0/0"},
+       {"IpProtocol": "tcp", "FromPort": "22", "ToPort": "22", "CidrIp": "0.0.0.0/0"}
      ]
    }
   },
@@ -70,16 +71,26 @@
     "Type": "AWS::EC2::Instance",
     "DependsOn": "InternetGatewayAttachment",
     "Properties": {
-      "ImageId": "ami-03ba821c0b75e252a",
+      "ImageId": "ami-047bb4163c506cd98",
       "InstanceType": "m5.large",
-      "NetworkInterfaces": {
+      "KeyName": "tko20",
+      "NetworkInterfaces": [{
         "GroupSet": [{"Ref":"JenkinsSecurityGroup"}],
         "AssociatePublicIpAddress": "true",
         "DeviceIndex": "0",
         "DeleteOnTermination": "true",
         "SubnetId": {"Ref": "Subnet"}
+      }],
+      "UserData": {
+        "Fn::Base64": {
+          "Fn::Join": [
+           "", [
+	      "#!/bin/bash \n",
+              "sudo yum update -y && sudo yum remove java* -y && sudo yum install -y java-1.8.0-openjdk && sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo && sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key && sudo yum install jenkins -y && sudo service jenkins start"
+           ]]
+            }
+        }
       }
-    }
   }
  }
 }
