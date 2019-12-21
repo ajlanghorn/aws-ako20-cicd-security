@@ -48,12 +48,6 @@ weight = 1
 languageName = "English"
 
 [[Languages.en.menu.shortcuts]]
-name = "<i class='fab fa-fw fa-github'></i> Theme GitHub repo"
-identifier = "ds"
-url = "https://github.com/thegrownupgeek/aws_workshop_theme"
-weight = 10
-
-[[Languages.en.menu.shortcuts]]
 name = "<i class='fab fa-aws'></i> AWS Console"
 url = "https://console.aws.amazon.com/"
 weight = 11
