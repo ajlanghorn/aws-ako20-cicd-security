@@ -12,9 +12,9 @@ defaultContentLanguageInSubdir= true
   author = "Andrew Langhorn, Chris King"
   description = "Workshop guide for Build Security In session"
   showVisitedLinks = false
-  disableSearch = false
+  disableSearch = true
   disableAssetsBusting = false
-  disableInlineCopyToClipBoard = true
+  disableInlineCopyToClipBoard = false
   disableShortcutsTitle = false
   disableLanguageSwitchingButton = false
   disableBreadcrumb = true
@@ -35,37 +35,3 @@ languageName = "English"
 name = "<i class='fab fa-aws'></i> AWS Console"
 url = "https://console.aws.amazon.com/"
 weight = 11
-
-[[Languages.en.menu.shortcuts]]
-name = "<i class='fas fa-fw fa-bookmark'></i> Hugo Documentation"
-identifier = "hugodoc"
-url = "https://gohugo.io/"
-weight = 20
-
-#Delete or comment out the Below to remove any second Languages.  If you wish to use second languages you must add the menu items again and also create alternative files for each page titled with the language code such as index.fr.md
-#[Languages.fr]
-#title = "Documentation du thème Hugo Learn"
-#weight = 2
-#languageName = "Français"
-
-#[[Languages.fr.menu.shortcuts]]
-#name = "<i class='fab fa-fw fa-github'></i> Repo GitHub"
-#identifier = "ds"
-#url = "https://github.com/matcornic/hugo-theme-learn"
-#weight = 10
-
-#[[Languages.fr.menu.shortcuts]]
-#name = "<i class='fas fa-fw fa-camera'></i> Vitrine"
-#url = "/showcase"
-#weight = 11
-
-#[[Languages.fr.menu.shortcuts]]
-#name = "<i class='fas fa-fw fa-bookmark'></i> Documentation Hugo"
-#identifier = "hugodoc"
-#url = "https://gohugo.io/"
-#weight = 20
-
-#[[Languages.fr.menu.shortcuts]]
-#name = "<i class='fas fa-fw fa-bullhorn'></i> Crédits"
-#url = "/credits"
-#weight = 30
