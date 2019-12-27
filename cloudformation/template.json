@@ -71,7 +71,7 @@
     "Type": "AWS::EC2::Instance",
     "DependsOn": "InternetGatewayAttachment",
     "Properties": {
-      "ImageId": "ami-047bb4163c506cd98",
+      "ImageId": "ami-0ae7bf40f7742b238",
       "InstanceType": "m5.large",
       "KeyName": "tko20",
       "NetworkInterfaces": [{
@@ -86,7 +86,7 @@
           "Fn::Join": [
            "", [
 	      "#!/bin/bash \n",
-              "sudo yum update -y && sudo yum remove java* -y && sudo yum install -y java-1.8.0-openjdk && sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo && sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key && sudo yum install jenkins -y && sudo service jenkins start"
+	      "sudo yum update -y && sudo service jenkins start"
            ]]
             }
         }

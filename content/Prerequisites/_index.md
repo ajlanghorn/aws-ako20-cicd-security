@@ -43,3 +43,4 @@ To make use of Jenkins, which acts as the main entry point in to our pipelines, 
 1. Click Instances on the left, then find the instance named `Jenkins`
 1. In the bottom pane, find the Elastic IPv4 address attached to the instance
 1. You can connect to Jenkins at http://<elastic_ip>:8080
+1. Authenticate with the username `bigco` and the passphrase `bigco`
