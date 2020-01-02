@@ -86,7 +86,7 @@
           "Fn::Join": [
            "", [
 	      "#!/bin/bash \n",
-	      "sudo yum update -y && sudo service jenkins start"
+	      "sudo yum update -y && sudo service jenkins start && sudo su -s /bin/bash jenkins && ssh -o StrictHostKeyChecking=no git@github.com && sudo yum install java-1.8.0-openjdk-devel -y"
            ]]
             }
         }
