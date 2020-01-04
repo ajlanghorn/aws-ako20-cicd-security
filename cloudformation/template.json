@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Build Security In",
+  "Description": "AWS AKO 2020 session",
 
   "Resources": {
     "VPC": {
