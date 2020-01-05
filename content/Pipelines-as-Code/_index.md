@@ -19,4 +19,17 @@ When you begin further research in to the Jenkinsfile, you realise that it has t
 - There is a full audit trail for changes to the pipeline
 - There becomes a single source of truth for the pipeline, which can be viewed and edited by anyone (with permissions)
 
+The team you're working with has given you the location of a Jenkinsfile that they've previously stored in a Git repository. You can find it in [this repository](https://github.com/ajlanghorn/dvja/blob/master/Jenkinsfile). Keep the repository open in a separate tab, as you'll likely need to refer back to it a few times today.
+
+1. Read through the Jenkinsfile - can you understand what it's doing?
+1. In Jenkins, click New Item from the left sidebar.
+1. Under Item Name, enter `dvja`, and choose Pipeline as the item type. Click OK.
+1. Scroll to the bottom, and change the value of Definition from `Pipeline script` to `Pipeline script from SCM`.
+1. Choose `Git` from the available SCMs, and enter `https://github.com/ajlanghorn/dvja` as the Repository URL.
+1. Leave all other options the same, and click Save.
+
+At this stage, you should now have a job built, and ready to run in Jenkins. From the left, click `Build Now`, and then click the dashed line that appears next to the build entry in the Build History box toward the bottom left of the page. From here, we can see what Jenkins did.
+
+1. Read through the Jenkinsfile, and the output from Jenkins' build history. Can you work out what's going on?
+
 
