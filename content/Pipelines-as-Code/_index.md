@@ -44,3 +44,5 @@ To finish the job off, you need to attach the correct IAM role to the Jenkins in
 1. Find your Jenkins master, and right-click it.
 1. Point to Instance Settings, and click Attach/Replace IAM Role.
 1. Find the role containing the phrase `JenkinsIAMInstanceProfile` in the drop-down list, and click Apply.
+
+Re-run the Jenkins job. You should see it passes successfully, and that each stage completes. At this point, notice that Jenkins is keeping track of the job history for you on a step-by-step basis as the pipeline proceeds - you can see this on the job's home page.
