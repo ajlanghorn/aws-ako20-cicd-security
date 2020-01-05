@@ -91,6 +91,9 @@
             }
         }
       }
+  },
+  "BuildArtifacts" : {
+    "Type" : "AWS::S3::Bucket"
   }
  }
 }
