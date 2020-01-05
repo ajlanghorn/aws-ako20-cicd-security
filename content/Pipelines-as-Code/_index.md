@@ -28,6 +28,8 @@ The team you're working with has given you the location of a Jenkinsfile that th
 1. Choose `Git` from the available SCMs, and enter `https://github.com/ajlanghorn/dvja` as the Repository URL.
 1. Leave all other options the same, and click Save.
 
+## Artifact storage
+
 At this stage, you should now have a job built, and ready to run in Jenkins. From the left, click `Build Now`, and then click the dashed line that appears next to the build entry in the Build History box toward the bottom left of the page. From here, we can see what Jenkins did.
 
 You should find that Jenkins didn't complete the job, because it tried to upload an object - our packaged Java application - to S3 and failed. There are two reasons it failed:
@@ -46,3 +48,18 @@ To finish the job off, you need to attach the correct IAM role to the Jenkins in
 1. Find the role containing the phrase `JenkinsIAMInstanceProfile` in the drop-down list, and click Apply.
 
 Re-run the Jenkins job. You should see it passes successfully, and that each stage completes. At this point, notice that Jenkins is keeping track of the job history for you on a step-by-step basis as the pipeline proceeds - you can see this on the job's home page.
+
+## Versioning artifacts
+
+BigCo Security mandates that teams keep hold of their build artifacts for audit and compliance reasons - your auditors and regulators can demand that you re-provision software at a given state to a provided infrastructure at any time, in order for them to perform their duties successfully. Since you've decided to make use of Amazon S3 for storage of your build artifacts, you need a way to handle this without interrupting the pipeline that now exists. You decide to use Amazon S3's versioning feature.
+
+1. Open the [Amazon S3 Console](https://console.aws.amazon.com/s3), and find the bucket with `BuildArtifacts` in its name.
+1. Click the bucket name, and then choose the Properties tab.
+1. Click the Versioning square, and choose the Enable radio button. Hit Save.
+
+At this point, you can re-run your Jenkins job. Your job should still pass, and your artifact should be uploaded to S3.
+
+1. Go back to the [Amazon S3 Console](https://console.aws.amazon.com/s3), and find the bucket with `BuildArtifacts` in its name.
+1. Click the bucket name, and toggle Versioning along the top from Hide to Show.
+
+You should now see that your artifacts are being versioned. Versioning is a simple way to meet some audit and compliance requirements, especially when there is a need to provide a cost-effective and managed way of maintaining build artifacts over time. You can also use artifacts versioned in this way as an "ultimate fall-back" for disaster recovery purposes.
