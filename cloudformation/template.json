@@ -71,7 +71,7 @@
     "Type": "AWS::EC2::Instance",
     "DependsOn": "InternetGatewayAttachment",
     "Properties": {
-      "ImageId": "ami-0e1fb717765445be1",
+      "ImageId": "ami-067bf9577e5c8fe7b",
       "InstanceType": "m5.large",
       "KeyName": "tko20",
       "NetworkInterfaces": [{
