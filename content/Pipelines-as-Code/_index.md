@@ -32,9 +32,7 @@ The team you're working with has given you the location of a Jenkinsfile that th
 
 At this stage, you should now have a job built, and ready to run in Jenkins. From the left, click `Build Now`, and then click the dashed line that appears next to the build entry in the Build History box toward the bottom left of the page. From here, we can see what Jenkins did.
 
-You should find that Jenkins didn't complete the job, because it tried to upload an object - our packaged Java application - to S3 and failed. There are two reasons it failed:
-
-1. Jenkins doesn't have any credentials to access S3
+You should find that Jenkins didn't complete the job, because it tried to upload an object - our packaged Java application - to S3 and failed. You hypothesise that this is because Jenkins hasn't got any access to S3.
 
 You do some digging, and realise that your team has already attempted to resolve this situation in the past:
 1. In the [IAM Console](https://console.aws.amazon.com/iam), click Roles on the left.

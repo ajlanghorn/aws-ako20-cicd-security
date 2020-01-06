@@ -105,3 +105,10 @@ Here, we're telling Jenkins to fail the build or warn that the build is unstable
 - fail the build if we receive any vulnerabilities deemed Critical or High
 - fail the build if we receive more than five vulnerabilities deemed Medium
 - fail the build if we receive more than ten vulnerabilities deemed Low
+
+We're not going to spend time in this workshop resolving issues with this software. Instead, we need to ensure that we can work without these issues causing us problems as we go ahead. To progress, either:
+
+- Significantly increase the values in the Jenkinsfile, re-commit, push and re-run the job
+- Revert the change, such that the `Check Dependencies` line now reads `dependencyCheckPublisher pattern: ''`
+
+When you've done this, and your job now passes, you can continue to the next stage!
