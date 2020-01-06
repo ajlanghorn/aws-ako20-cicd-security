@@ -1,9 +1,9 @@
 +++
 title = "Pipelines-as-Code"
 date = 2019-07-08T13:08:10+01:00
-weight = 4
+weight = 2
 chapter = true
-pre = "<b>3. </b>"
+pre = "<b>1. </b>"
 draft = false
 +++
 
