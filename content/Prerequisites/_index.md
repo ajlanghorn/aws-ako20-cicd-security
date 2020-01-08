@@ -44,8 +44,7 @@ At this point, you should also clone the forked repository locally, too - you'll
 ### Jenkins
 
 1. Open the AWS Console
-1. Open the EC2 Console, at https://console.aws.amazon.com/ec2
-1. Click Instances on the left, then find the instance named `Jenkins`
-1. In the bottom pane, find the Elastic IPv4 address attached to the instance
-1. You can connect to Jenkins at http://<elastic_ip>:8080
+1. Open the CloudFormation console, at https://console.aws.amazon.com/cloudformation.
+1. Open the AKO stack, and choose the Outputs tab.
+1. Make a note of the URL provided - this is the DNS name for the ALB in front of Jenkins.
 1. Authenticate with the username `bigco` and the passphrase `bigco`
