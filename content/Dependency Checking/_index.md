@@ -78,7 +78,7 @@ To dive deeper in to the results, click the latest build number under Build Hist
 - the vulnerability's CWE number
 - the severity of the vulnerability
 
-{{% notice tip %}} CVE is a dictionary that provides definitions of publicly disclosed vulnerabilities and exposures in software packages, published both commercially and on an open basis. {{% /notice %}}
+CVE is a dictionary that provides definitions of publicly disclosed vulnerabilities and exposures in software packages, published both commercially and on an open basis.
 
 Click the `+` symbol to the left of an entry to view more information about the issue.
 
