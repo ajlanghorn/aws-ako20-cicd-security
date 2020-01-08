@@ -2,6 +2,23 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "AWS AKO 2020 session",
 
+  "Parameters": {
+    "AMIId" : {
+      "Type" : "String",
+      "Description": "AMI with Jenkins",
+      "Default": "ami-067bf9577e5c8fe7b"
+    },
+    "KeyName" : {
+      "Type" : "String",
+      "Description": "SSH Key",
+      "Default" : "tko20"
+    },
+    "InstanceType": {
+      "Type" : "String",
+      "Description" : "Instance type",
+      "Default" : "m5.large"
+  }
+},
   "Resources": {
     "VPC": {
       "Type": "AWS::EC2::VPC",
@@ -9,11 +26,27 @@
         "CidrBlock": "10.0.0.0/16"
       }
     },
-    "Subnet": {
+    "PublicSubnetA": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": { "Ref":"VPC" },
+        "AvailabilityZone" : { "Fn::Sub" : "${AWS::Region}a" },
         "CidrBlock": "10.0.0.0/24"
+      }
+    },
+    "PublicSubnetB": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": { "Ref":"VPC" },
+        "AvailabilityZone" : { "Fn::Sub" : "${AWS::Region}b" },
+        "CidrBlock": "10.0.1.0/24"
+      }
+    },
+    "PrivateSubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": { "Ref":"VPC" },
+        "CidrBlock": "10.0.3.0/24"
       }
     },
     "InternetGateway": {
@@ -32,6 +65,12 @@
        "VpcId": {"Ref":"VPC"}
      }
    },
+   "PrivateRouteTable": {
+     "Type": "AWS::EC2::RouteTable",
+     "Properties": {
+       "VpcId": {"Ref":"VPC"}
+     }
+   },
    "Route": {
      "Type": "AWS::EC2::Route",
      "DependsOn": "InternetGatewayAttachment",
@@ -45,16 +84,25 @@
     "Type": "AWS::EC2::SubnetRouteTableAssociation",
     "Properties": {
       "RouteTableId": {"Ref":"RouteTable"},
-      "SubnetId": {"Ref":"Subnet"}
+      "SubnetId": {"Ref":"PublicSubnetA"}
     }
   },
-  "IpAddress": {
-    "Type": "AWS::EC2::EIP",
-    "DependsOn": "InternetGatewayAttachment",
+  "PrivateSubnetRouteTableAssociation": {
+    "Type": "AWS::EC2::SubnetRouteTableAssociation",
     "Properties": {
-      "Domain": "vpc",
-      "InstanceId": { "Ref": "Jenkins" }
+      "RouteTableId": {"Ref":"PrivateRouteTable"},
+      "SubnetId": {"Ref":"PrivateSubnet"}
     }
+  },
+  "ALBSecurityGroup" : {
+    "Type": "AWS::EC2::SecurityGroup",
+    "Properties": {
+      "VpcId": {"Ref":"VPC"},
+      "GroupDescription":"Enable access to Jenkins ALB",
+      "SecurityGroupIngress": [
+        {"IpProtocol": "tcp", "FromPort": "80", "ToPort": "80", "CidrIp": "0.0.0.0/0"}
+      ]
+    } 
   },
   "JenkinsSecurityGroup" : {
    "Type": "AWS::EC2::SecurityGroup",
@@ -62,27 +110,174 @@
      "VpcId": {"Ref":"VPC"},
      "GroupDescription":"Enable access to Jenkins",
      "SecurityGroupIngress": [
-       {"IpProtocol": "tcp", "FromPort": "8080", "ToPort": "8080", "CidrIp": "0.0.0.0/0"},
+       {
+        "IpProtocol" : "tcp",
+        "FromPort" : "8080",
+        "ToPort" : "8080",
+        "SourceSecurityGroupId" : {"Fn::Select" : [0, {"Fn::GetAtt" : ["ApplicationLoadBalancer", "SecurityGroups"]}]}
+      },
        {"IpProtocol": "tcp", "FromPort": "22", "ToPort": "22", "CidrIp": "0.0.0.0/0"}
      ]
    }
   },
-  "Jenkins" : {
-    "Type": "AWS::EC2::Instance",
-    "DependsOn": "InternetGatewayAttachment",
-    "Properties": {
-      "ImageId": "ami-067bf9577e5c8fe7b",
-      "InstanceType": "m5.large",
-      "KeyName": "tko20",
-      "NetworkInterfaces": [{
-        "GroupSet": [{"Ref":"JenkinsSecurityGroup"}],
-        "AssociatePublicIpAddress": "true",
-        "DeviceIndex": "0",
-        "DeleteOnTermination": "true",
-        "SubnetId": {"Ref": "Subnet"}
-      }]
+  "WebServerGroup" : {
+    "Type" : "AWS::AutoScaling::AutoScalingGroup",
+    "Properties" : {
+      "VPCZoneIdentifier" : [ { "Ref" : "PublicSubnetA" }, { "Ref" : "PublicSubnetB" } ],
+      "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
+      "MinSize" : "1",
+      "MaxSize" : "1",
+      "TargetGroupARNs" : [ { "Ref" : "ALBTargetGroup" } ]
+    },
+    "CreationPolicy" : {
+      "ResourceSignal" : {
+        "Timeout" : "PT15M"
+      }
+    },
+    "UpdatePolicy": {
+      "AutoScalingRollingUpdate": {
+        "MinInstancesInService": "1",
+        "MaxBatchSize": "1",
+        "PauseTime" : "PT15M",
+        "WaitOnResourceSignals": "false"
+      }
     }
   },
+  "LaunchConfig" : {
+    "Type" : "AWS::AutoScaling::LaunchConfiguration",
+    "Metadata": {
+      "Comment": "Install a simple application",
+      "AWS::CloudFormation::Init": {
+        "config": {
+          "packages": {
+            "yum": {
+              "httpd": []
+            }
+          },
+          "files": {
+            "/etc/cfn/cfn-hup.conf": {
+              "content": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "[main]\n",
+                    "stack=",
+                    {
+                      "Ref": "AWS::StackId"
+                    },
+                    "\n",
+                    "region=",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "\n"
+                  ]
+                ]
+              },
+              "mode": "000400",
+              "owner": "root",
+              "group": "root"
+            },
+            "/etc/cfn/hooks.d/cfn-auto-reloader.conf": {
+              "content": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "[cfn-auto-reloader-hook]\n",
+                    "triggers=post.update\n",
+                    "path=Resources.LaunchConfig.Metadata.AWS::CloudFormation::Init\n",
+                    "action=/opt/aws/bin/cfn-init -v ",
+                    "         --stack ",
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "         --resource LaunchConfig ",
+                    "         --region ",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "\n",
+                    "runas=root\n"
+                  ]
+                ]
+              },
+              "mode": "000400",
+              "owner": "root",
+              "group": "root"
+            }
+          },
+          "services": {
+            "sysvinit": {
+              "cfn-hup": {
+                "enabled": "true",
+                "ensureRunning": "true",
+                "files": [
+                  "/etc/cfn/cfn-hup.conf",
+                  "/etc/cfn/hooks.d/cfn-auto-reloader.conf"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "Properties" : {
+      "ImageId" : { "Ref": "AMIId" },
+      "SecurityGroups" : [ { "Ref" : "JenkinsSecurityGroup" } ],
+      "InstanceType" : { "Ref" : "InstanceType" },
+      "KeyName" : { "Ref" : "KeyName" },
+      "AssociatePublicIpAddress" : "True",
+      "IamInstanceProfile" : { "Ref": "JenkinsIAMInstanceProfile" },
+      "UserData"       : { "Fn::Base64" : { "Fn::Join" : [
+        "",
+        [
+           "#!/bin/bash -xe\n",
+           "yum update -y aws-cfn-bootstrap\n",
+           "/opt/aws/bin/cfn-init -v ",
+           "         --stack ", { "Ref" : "AWS::StackName" },
+           "         --resource LaunchConfig ",
+           "         --region ", { "Ref" : "AWS::Region" },
+           "\n",
+           "/opt/aws/bin/cfn-signal -e $? ",
+           "         --stack ", { "Ref" : "AWS::StackName" },
+           "         --resource WebServerGroup ",
+           "         --region ", { "Ref" : "AWS::Region" },
+           "\n"
+      ]]}}
+    }
+  },
+	"ApplicationLoadBalancer" : {
+      "Type" : "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "Properties" : {
+        "Subnets" : [ { "Ref" : "PublicSubnetA" }, { "Ref": "PublicSubnetB"} ],
+        "SecurityGroups" : [ { "Ref" : "ALBSecurityGroup" } ]
+      }
+  },
+	    "ALBListener" : {
+      "Type" : "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties" : {
+        "DefaultActions" : [{
+          "Type" : "forward",
+          "TargetGroupArn" : { "Ref" : "ALBTargetGroup" }
+        }],
+        "LoadBalancerArn" : { "Ref" : "ApplicationLoadBalancer" },
+        "Port" : "80",
+        "Protocol" : "HTTP"
+      }
+    },
+    "ALBTargetGroup" : {
+      "Type" : "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties" : {
+        "HealthCheckIntervalSeconds" : 30,
+        "HealthCheckTimeoutSeconds" : 5,
+        "HealthyThresholdCount" : 3,
+        "Port" : 8080,
+        "Protocol" : "HTTP",
+        "UnhealthyThresholdCount" : 5,
+        "Matcher" : { "HttpCode": "200,403" },
+        "VpcId" : {"Ref" : "VPC"}
+      }
+    },
   "BuildArtifacts" : {
     "Type" : "AWS::S3::Bucket"
   },
@@ -132,5 +327,24 @@
       "Roles" : [{ "Ref" : "JenkinsIAMRole" }]
     }
   }
- }
+ },
+ "Outputs": {
+  "URL": {
+    "Description": "Jenkins URL",
+    "Value": {
+      "Fn::Join": [
+        "",
+        [
+          "http://",
+          {
+            "Fn::GetAtt": [
+              "ApplicationLoadBalancer",
+              "DNSName"
+            ]
+          }
+        ]
+      ]
+    }
+  }
+}
 }
