@@ -30,7 +30,7 @@ Open the Jenkinsfile, and update the Build stage to:
 ```
 stage('Build') {
       steps {
-        git 'https://github.com/ajlanghorn/dvja.git'
+        git <repository-url>
         sh "mvn clean package"
         recordIssues enabledForFailure: true, tool: mavenConsole(), referenceJobName: 'Plugins/warnings-ng-plugin/master'
         recordIssues enabledForFailure: true, tools: [java(), javaDoc()], sourceCodeEncoding: 'UTF-8', referenceJobName: 'Plugins/warnings-ng-plugin/master'
