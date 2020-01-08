@@ -6,7 +6,7 @@
     "AMIId" : {
       "Type" : "String",
       "Description": "AMI with Jenkins",
-      "Default": "ami-067bf9577e5c8fe7b"
+      "Default": "ami-025346349d769fcb4"
     },
     "KeyName" : {
       "Type" : "String",
@@ -102,7 +102,7 @@
       "SecurityGroupIngress": [
         {"IpProtocol": "tcp", "FromPort": "80", "ToPort": "80", "CidrIp": "0.0.0.0/0"}
       ]
-    } 
+    }
   },
   "JenkinsSecurityGroup" : {
    "Type": "AWS::EC2::SecurityGroup",
