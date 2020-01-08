@@ -1,4 +1,4 @@
-baseURL = "https://cicdsecurity.ajl.sa-demos.net"
+baseURL = "http://cicdsecurity.ajl.sa-demos.net"
 languageCode = "en-GB"
 defaultContentLanguage = "en"
 
