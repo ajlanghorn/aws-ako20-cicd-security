@@ -15,19 +15,26 @@ BigCo's quality checking tool of choice is [`CheckStyle`](https://checkstyle.org
 
 ## Installation
 
-It's possible to run CheckStyle in multiple ways. We're going to use it via its in-built command-line interface, inside a Jenkins job.
+It's possible to run CheckStyle in multiple ways. We're going to use it through a plugin.
 
-Open the Jenkinsfile, and insert a new stage before the Build stage:
+1. Open Jenkins, and click `Manage Jenkins` on the left.
+1. Click `Manage Plugins`, then choose the `Available` tab.
+1. At the top right, search for `Warnings Next`, and select the `Warnings Next Generation Plugin` result.
+1. Click `Download Now and Install After Restart`
+1. Select the option to restart when no jobs are running.
+1. Wait a moment, and refresh the page. Jenkins should start to restart.
+1. You should now be logged out; log back in. Your plug-in should now be installed.
+
+Open the Jenkinsfile, and update the Build stage to:
 
 ```
-stage('Style check') {
-    steps {
-        sh "wget https://github.com/checkstyle/checkstyle/releases/download/checkstyle-8.28/checkstyle-8.28-all.jar"
-        sh "wget https://raw.githubusercontent.com/checkstyle/checkstyle/master/src/main/resources/sun_checks.xml"
-        sh "wget https://raw.githubusercontent.com/checkstyle/checkstyle/master/src/main/resources/google_checks.xml"
-        sh "chown jenkins:jenkins checkstyle*.jar *_checks.xml"
-        sh "java -jar checkstyle-8.28-all.jar -c /sun_checks.xml src/*.java"
-        sh "java -jar java -jar checkstyle-8.28-all.jar -c /google_checks.xml src/*.java"
+stage('Build') {
+      steps {
+        git 'https://github.com/ajlanghorn/dvja.git'
+        sh "mvn clean package"
+        recordIssues enabledForFailure: true, tool: mavenConsole(), referenceJobName: 'Plugins/warnings-ng-plugin/master'
+        recordIssues enabledForFailure: true, tools: [java(), javaDoc()], sourceCodeEncoding: 'UTF-8', referenceJobName: 'Plugins/warnings-ng-plugin/master'
+        recordIssues enabledForFailure: true, tool: checkStyle(pattern: 'target/checkstyle-result.xml'), sourceCodeEncoding: 'UTF-8', referenceJobName: 'Plugins/warnings-ng-plugin/master'
+      }
     }
-}
 ```
