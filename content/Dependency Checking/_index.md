@@ -21,14 +21,7 @@ Dependency Check is a tool to identify dependencies and to check for known, publ
 
 ### Installation
 
-Dependency-Check is shipped in two parts: the binary itself, and the Jenkins plugin. We need both to get things to work. First, we'll install the binary, and then we'll install the plugin.
-
-1. Open Jenkins, and click `Manage Jenkins` on the left.
-1. Click `Global Tool Configuration`, and scroll down to the `Depdendency-Check` section.
-1. Click `Add Dependency-Check`, enter `Dependency-Check` as the Name, check Install Automatically, and ensure that the version is set to 5.2.4.
-1. Click Save.
-
-Jenkins will manage installation of Dependency-Check's binary for us, in line with these settings, when we first need to make use of it.
+Dependency-Check is shipped in two parts: the binary itself, and the Jenkins plugin. We need both to get things to work. First, we'll install the plugin, and then we'll install the binary.
 
 1. Open Jenkins, and click `Manage Jenkins` on the left.
 1. Click `Manage Plugins`, then choose the `Available` tab.
@@ -39,6 +32,13 @@ Jenkins will manage installation of Dependency-Check's binary for us, in line wi
 1. You should now be logged out; log back in. Your plug-in should now be installed.
 
 If you're stuck on a screen advising that the plug-in is being installed, remove `/updateCenter` from the URL and hit Enter.
+
+1. Open Jenkins, and click `Manage Jenkins` on the left.
+1. Click `Global Tool Configuration`, and scroll down to the `Depdendency-Check` section.
+1. Click `Add Dependency-Check`, enter `Dependency-Check` as the Name, check Install Automatically, and ensure that the version is set to 5.2.4.
+1. Click Save.
+
+Jenkins will manage installation of Dependency-Check's binary for us, in line with these settings, when we first need to make use of it.
 
 ### Configuration
 
