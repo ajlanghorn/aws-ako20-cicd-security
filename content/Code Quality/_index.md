@@ -25,18 +25,53 @@ It's possible to run CheckStyle in multiple ways. We're going to use it through 
 1. Wait a moment, and refresh the page. Jenkins should start to restart.
 1. You should now be logged out; log back in. Your plug-in should now be installed.
 
-Open the Jenkinsfile, and update the Build stage to:
+Open the Jenkinsfile, and create an extra stage:
 
 ```
-stage('Build') {
+stage('Analysis') {
       steps {
-        git <repository-url>
-        sh "mvn clean package"
-        recordIssues enabledForFailure: true, tool: mavenConsole(), referenceJobName: 'Plugins/warnings-ng-plugin/master'
-        recordIssues enabledForFailure: true, tools: [java(), javaDoc()], sourceCodeEncoding: 'UTF-8', referenceJobName: 'Plugins/warnings-ng-plugin/master'
-        recordIssues enabledForFailure: true, tool: checkStyle(pattern: 'target/checkstyle-result.xml'), sourceCodeEncoding: 'UTF-8', referenceJobName: 'Plugins/warnings-ng-plugin/master'
+        sh "mvn --batch-mode -V -U -e checkstyle:checkstyle pmd:pmd pmd:cpd spotbugs:spotbugs"
       }
     }
 ```
 
-Finally, re-run the Jenkins job to see what code style issues have been found in the repository.
+Also create an extra section *after* the final stage:
+
+```
+post {
+    always {
+      recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
+      recordIssues enabledForFailure: true, tool: checkStyle()
+      recordIssues enabledForFailure: true, tool: spotBugs()
+      recordIssues enabledForFailure: true, tool: cpd(pattern: '**/target/cpd.xml')
+      recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+    }
+  }
+```
+
+### Check the output
+
+The configuration as defined is set in two places:
+1. pom.xml
+1. Jenkinsfile
+
+#### pom.xml
+Configures when the plugin should run as part of the maven build process. Currently this is set ot the 'validate' phase which occurs before the 'compile' phase. This means that the build will fail to complete due to 677 validation errors.
+https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+
+To make the build pass edit pom.xml and change the phase to 'verify' as below:
+
+```
+<execution>
+<id>verify</id>
+<phase>verify</phase>
+<goals>
+    <goal>check</goal>
+</goals>
+</execution>
+```
+
+#### Jenkinsfile
+Creates an 'Analysis' stage after the 'Check dependencies' phase. This performs checkstyle, spotbugs and two other checks. This occurs post-compilation and pre-publishing.
+
+Also creates as post-build reporting phase.
