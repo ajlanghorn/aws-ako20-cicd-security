@@ -38,3 +38,5 @@ stage('Build') {
       }
     }
 ```
+
+Finally, re-run the Jenkins job to see what code style issues have been found in the repository.
