@@ -74,4 +74,6 @@ To make the build pass edit pom.xml and change the phase to 'verify' as below:
 #### Jenkinsfile
 Creates an 'Analysis' stage after the 'Check dependencies' phase. This performs checkstyle, spotbugs and two other checks. This occurs post-compilation and pre-publishing.
 
-Also creates as post-build reporting phase.
+Also create a post-build reporting phase.
+=======
+Finally, re-run the Jenkins job to see what code style issues have been found in the repository.
