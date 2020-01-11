@@ -35,11 +35,13 @@ At this stage, you should now have a job built, and ready to run in Jenkins. Fro
 You should find that Jenkins didn't complete the job, because it tried to upload an object - our packaged Java application - to S3 and failed. You hypothesise that this is because Jenkins hasn't got any access to S3.
 
 You do some digging, and realise that your team has already attempted to resolve this situation in the past:
+
 1. In the [IAM Console](https://console.aws.amazon.com/iam), click Roles on the left.
 1. Search for `JenkinsIAMRole`, and click the role name where this forms part of the full name.
 1. Inspect the in-line policy and trust relationship to ensure you understand what they do.
 
 To finish the job off, you need to attach the correct IAM role to the Jenkins instance.
+
 1. Open the [EC2 Console](https://console.aws.amazon.com/ec2), and click Instances on the left.
 1. Find your Jenkins master, and right-click it.
 1. Point to Instance Settings, and click Attach/Replace IAM Role.
