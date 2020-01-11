@@ -34,4 +34,9 @@ languageName = "English"
 [[Languages.en.menu.shortcuts]]
 name = "<i class='fab fa-aws'></i> AWS Console"
 url = "https://console.aws.amazon.com/"
-weight = 11
+weight = 1
+
+[[Languages.en.menu.shortcuts]]
+name = "<i class='fab fa-aws'></i> Provide feedback"
+url = "https://trawler.amazon.com/bsi-sessionfeedback"
+weight = "2"
