@@ -75,11 +75,18 @@
        "GatewayId": {"Ref":"InternetGateway"}
     }
   },
-  "SubnetRouteTableAssociation": {
+  "SubnetRouteTableAssociationA": {
     "Type": "AWS::EC2::SubnetRouteTableAssociation",
     "Properties": {
       "RouteTableId": {"Ref":"RouteTable"},
       "SubnetId": {"Ref":"PublicSubnetA"}
+    }
+  },
+  "SubnetRouteTableAssociationB": {
+    "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    "Properties": {
+      "RouteTableId": {"Ref":"RouteTable"},
+      "SubnetId": {"Ref":"PublicSubnetB"}
     }
   },
   "PrivateSubnetRouteTableAssociation": {
