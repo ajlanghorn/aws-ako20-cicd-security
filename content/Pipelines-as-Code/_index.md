@@ -40,12 +40,14 @@ You do some digging, and realise that your team has already attempted to resolve
 1. Search for `JenkinsIAMRole`, and click the role name where this forms part of the full name.
 1. Inspect the in-line policy and trust relationship to ensure you understand what they do.
 
-To finish the job off, you need to attach the correct IAM role to the Jenkins instance.
+Next, you need to attach the correct IAM role to the Jenkins instance.
 
 1. Open the [EC2 Console](https://console.aws.amazon.com/ec2), and click Instances on the left.
 1. Find your Jenkins master, and right-click it.
 1. Point to Instance Settings, and click Attach/Replace IAM Role.
 1. Find the role containing the phrase `JenkinsIAMInstanceProfile` in the drop-down list, and click Apply.
+
+Finally, change the `Publish to S3` stage in the Jenkinsfile, such that the command to copy the WAR file to an S3 bucket points to the S3 bucket in your account. Hint: wondering where to look? Look for `CHANGE-ME`.
 
 Re-run the Jenkins job. You should see it passes successfully, and that each stage completes. At this point, notice that Jenkins is keeping track of the job history for you on a step-by-step basis as the pipeline proceeds - you can see this on the job's home page.
 
