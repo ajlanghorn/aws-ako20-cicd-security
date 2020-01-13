@@ -7,6 +7,8 @@ pre = "<b>4. </b>"
 draft = false
 +++
 
+## Code Quality
+
 The messier code is, the less maintainable it is. When dealing with a problem, or trying to understand a complicated feature, there are few things more annoying than overly-complicated code. After all, as Einstein said, "if you can't explain it simply, you don't understand it well enough".
 
 Keeping code clean and simple is exactly what BigCo are looking to do - their developers are tired of spending hours trying to understand code which may well have been written many years ago by people who have long since left the company. When they do manage to understand the code, they spend time fixing the issues they need to, or extending the functionality. If they have time - which is rare - they might refactor the code to make the process of understanding it easier for the next person who happens to take a look at it.
