@@ -31,7 +31,9 @@ Dependency-Check is shipped in two parts: the binary itself, and the Jenkins plu
 1. Wait a moment, and refresh the page. Jenkins should start to restart.
 1. You should now be logged out; log back in. Your plug-in should now be installed.
 
-If you're stuck on a screen advising that the plug-in is being installed, remove `/updateCenter` from the URL and hit Enter.
+**Hint**: If you're stuck on a screen advising that the plug-in is being installed, remove `/updateCenter` from the URL and hit Enter.
+
+Next...
 
 1. Open Jenkins, and click `Manage Jenkins` on the left.
 1. Click `Global Tool Configuration`, and scroll down to the `Depdendency-Check` section.
