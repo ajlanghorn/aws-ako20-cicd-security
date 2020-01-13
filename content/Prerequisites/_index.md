@@ -15,7 +15,7 @@ Today's session assumes:
 - your laptop has Git installed;
 - you have access to a GitHub.com account of your own;
 - you have basic familiarity of Git, including committing, pushing, pulling and cloning;
-- you have adequate knowledge of using a terminal emulator, such as iTerm, Terminal or PowerShell;
+- you have adequate knowledge of using a terminal emulator, such as iTerm or Terminal;
 - you have access to an Isengard-vended AWS account.
 
 # Prerequisites
@@ -31,7 +31,8 @@ If you already have an account that you wish to use, then feel free to skip this
 - `Account Type`: `Individual`
 - `Data Classification`: `Account is not used for production`
 
-There is no need to change S3 Public Access settings or to opt-in to any newer regions. As long as you stick to the same region consistently, you are able to make use of any commercial region for today's session.
+There is no need to change S3 Public Access settings or to opt-in to any newer regions.
+**You must make use of EU (Ireland) (eu-west-1) for today's session.**
 
 ### CloudFormation
 
