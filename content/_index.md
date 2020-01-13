@@ -15,3 +15,7 @@ In today's session, you'll assume the role of the intrepid security engineer, em
 BigCo's typical security approach has placed a lot of effort on manual, infrequent review of the source code, along with annual penetration tests. Ultimately, this approach is slow and only allows the security posture of the infrastructure being built to be assessed as a point-in-time snapshot.
 
 Your job is to ensure your team can deliver quickly, without compromising on product security.
+
+## Let's get going!
+
+We're ready to get going! To begin, choose the [Prerequisites](/prerequisites) section from the left.
