@@ -12,7 +12,12 @@
       "Type" : "String",
       "Description" : "Instance type",
       "Default" : "m5.large"
-  }
+    },
+    "AmazonPrefixList": {
+      "Type" : "String",
+      "Description" : "CORP Prefix list for the region stack is running, from https://apll.corp.amazon.com/. Default is for eu-west-1",
+      "Default" : "pl-01a74268"
+    }
 },
   "Resources": {
     "VPC": {
@@ -118,7 +123,7 @@
         "ToPort" : "8080",
         "SourceSecurityGroupId" : {"Fn::Select" : [0, {"Fn::GetAtt" : ["ApplicationLoadBalancer", "SecurityGroups"]}]}
       },
-       {"IpProtocol": "tcp", "FromPort": "22", "ToPort": "22", "CidrIp": "0.0.0.0/0"}
+       {"IpProtocol": "tcp", "FromPort": "22", "ToPort": "22", "SourcePrefixListId": {"Ref":"AmazonPrefixList"} }
      ]
    }
   },
