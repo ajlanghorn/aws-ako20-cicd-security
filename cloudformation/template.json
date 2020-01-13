@@ -115,125 +115,20 @@
      ]
    }
   },
-  "WebServerGroup" : {
-    "Type" : "AWS::AutoScaling::AutoScalingGroup",
-    "Properties" : {
-      "VPCZoneIdentifier" : [ { "Ref" : "PublicSubnetA" }, { "Ref" : "PublicSubnetB" } ],
-      "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
-      "MinSize" : "1",
-      "MaxSize" : "1",
-      "TargetGroupARNs" : [ { "Ref" : "ALBTargetGroup" } ]
-    },
-    "CreationPolicy" : {
-      "ResourceSignal" : {
-        "Timeout" : "PT15M"
-      }
-    },
-    "UpdatePolicy": {
-      "AutoScalingRollingUpdate": {
-        "MinInstancesInService": "1",
-        "MaxBatchSize": "1",
-        "PauseTime" : "PT15M",
-        "WaitOnResourceSignals": "false"
-      }
-    }
-  },
-  "LaunchConfig" : {
-    "Type" : "AWS::AutoScaling::LaunchConfiguration",
-    "Metadata": {
-      "Comment": "Install a simple application",
-      "AWS::CloudFormation::Init": {
-        "config": {
-          "files": {
-            "/etc/cfn/cfn-hup.conf": {
-              "content": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "[main]\n",
-                    "stack=",
-                    {
-                      "Ref": "AWS::StackId"
-                    },
-                    "\n",
-                    "region=",
-                    {
-                      "Ref": "AWS::Region"
-                    },
-                    "\n"
-                  ]
-                ]
-              },
-              "mode": "000400",
-              "owner": "root",
-              "group": "root"
-            },
-            "/etc/cfn/hooks.d/cfn-auto-reloader.conf": {
-              "content": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "[cfn-auto-reloader-hook]\n",
-                    "triggers=post.update\n",
-                    "path=Resources.LaunchConfig.Metadata.AWS::CloudFormation::Init\n",
-                    "action=/opt/aws/bin/cfn-init -v ",
-                    "         --stack ",
-                    {
-                      "Ref": "AWS::StackName"
-                    },
-                    "         --resource LaunchConfig ",
-                    "         --region ",
-                    {
-                      "Ref": "AWS::Region"
-                    },
-                    "\n",
-                    "runas=root\n"
-                  ]
-                ]
-              },
-              "mode": "000400",
-              "owner": "root",
-              "group": "root"
-            }
-          },
-          "services": {
-            "sysvinit": {
-              "cfn-hup": {
-                "enabled": "true",
-                "ensureRunning": "true",
-                "files": [
-                  "/etc/cfn/cfn-hup.conf",
-                  "/etc/cfn/hooks.d/cfn-auto-reloader.conf"
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    "Properties" : {
-      "ImageId" : { "Ref": "AMIId" },
-      "SecurityGroups" : [ { "Ref" : "JenkinsSecurityGroup" } ],
-      "InstanceType" : { "Ref" : "InstanceType" },
-      "AssociatePublicIpAddress" : "True",
-      "UserData"       : { "Fn::Base64" : { "Fn::Join" : [
-        "",
-        [
-           "#!/bin/bash -xe\n",
-           "yum update -y aws-cfn-bootstrap\n",
-           "/opt/aws/bin/cfn-init -v ",
-           "         --stack ", { "Ref" : "AWS::StackName" },
-           "         --resource LaunchConfig ",
-           "         --region ", { "Ref" : "AWS::Region" },
-           "\n",
-           "/opt/aws/bin/cfn-signal -e $? ",
-           "         --stack ", { "Ref" : "AWS::StackName" },
-           "         --resource WebServerGroup ",
-           "         --region ", { "Ref" : "AWS::Region" },
-           "\n"
-      ]]}}
-    }
-  },
+	"JenkinsInstance" : {
+    "Type": "AWS::EC2::Instance",
+    "DependsOn": "InternetGatewayAttachment",
+    "Properties": {
+      "InstanceType": "m5.large",
+      "KeyName": "tko20",
+      "NetworkInterfaces": [{
+        "GroupSet": [{"Ref":"JenkinsSecurityGroup"}],
+        "AssociatePublicIpAddress": "true",
+        "DeviceIndex": "0",
+        "DeleteOnTermination": "true",
+        "SubnetId": {"Ref": "PublicSubnetA"},
+			"ImageId" : { "Ref": "AMIId" }
+	},
 	"ApplicationLoadBalancer" : {
       "Type" : "AWS::ElasticLoadBalancingV2::LoadBalancer",
       "Properties" : {
@@ -263,6 +158,8 @@
         "Protocol" : "HTTP",
         "UnhealthyThresholdCount" : 5,
         "Matcher" : { "HttpCode": "200,403" },
+				"TargetType" : "instance",
+				"Targets": [ { "Id": { "Ref": "JenkinsInstance" }, "Port": 8080 },
         "VpcId" : {"Ref" : "VPC"}
       }
     },
