@@ -144,11 +144,6 @@
       "Comment": "Install a simple application",
       "AWS::CloudFormation::Init": {
         "config": {
-          "packages": {
-            "yum": {
-              "httpd": []
-            }
-          },
           "files": {
             "/etc/cfn/cfn-hup.conf": {
               "content": {
