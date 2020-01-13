@@ -6,7 +6,7 @@
     "AMIId" : {
       "Type" : "String",
       "Description": "AMI with Jenkins",
-      "Default": "ami-025346349d769fcb4"
+      "Default": "ami-0efe2e4736eb4c54a"
     },
     "InstanceType": {
       "Type" : "String",
